@@ -1,0 +1,171 @@
+<Window x:Class="DualNicRouteTool.Views.PlanPreviewDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:c="clr-namespace:DualNicRouteTool.Controls"
+        Title="确认路由变更"
+        Width="680" SizeToContent="Height" MaxHeight="760"
+        ResizeMode="NoResize" ShowInTaskbar="False" WindowStartupLocation="CenterOwner"
+        FontFamily="{StaticResource UiFont}" FontSize="13" UseLayoutRounding="True">
+
+    <Window.Resources>
+        <!-- 一条路由变更：前面的符号由所在列表决定 -->
+        <DataTemplate x:Key="RouteLineTemplate">
+            <TextBlock Margin="0,2" Style="{StaticResource MonoStyle}" TextWrapping="Wrap" Text="{Binding}" />
+        </DataTemplate>
+        <Style x:Key="GroupTitleStyle" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Margin" Value="8,0,0,0" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+    </Window.Resources>
+
+    <Border Background="{DynamicResource AppBackgroundBrush}" TextElement.Foreground="{DynamicResource TextPrimaryBrush}">
+        <Grid Margin="22,20,22,18">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- 标题 -->
+            <StackPanel Orientation="Horizontal">
+                <Border Style="{StaticResource IconTileStyle}" Background="{DynamicResource BrandBrush}">
+                    <c:Icon Width="22" Height="22" Data="{StaticResource Icon.Route}" />
+                </Border>
+                <StackPanel Margin="14,0,0,0" VerticalAlignment="Center">
+                    <TextBlock FontSize="16" FontWeight="SemiBold" Text="确认路由变更" />
+                    <TextBlock Margin="0,2,0,0" Style="{StaticResource CaptionStyle}" Text="请核对下面的改动。确认之后才会修改路由表。" />
+                </StackPanel>
+            </StackPanel>
+
+            <!-- 本次配置 -->
+            <Border Grid.Row="1" Margin="0,16,0,0" Padding="14,10" Style="{StaticResource CardStyle}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Border Margin="0,3" HorizontalAlignment="Left" Style="{StaticResource BadgeStyle}" Tag="Wan">
+                        <StackPanel Orientation="Horizontal">
+                            <c:Icon Width="13" Height="13" Data="{StaticResource Icon.Globe}" />
+                            <TextBlock Margin="5,0,0,0" Text="外网" />
+                        </StackPanel>
+                    </Border>
+                    <TextBlock Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding WanText}" />
+                    <Border Grid.Row="1" Margin="0,3" HorizontalAlignment="Left" Style="{StaticResource BadgeStyle}" Tag="Lan">
+                        <StackPanel Orientation="Horizontal">
+                            <c:Icon Width="13" Height="13" Data="{StaticResource Icon.Building}" />
+                            <TextBlock Margin="5,0,0,0" Text="内网" />
+                        </StackPanel>
+                    </Border>
+                    <TextBlock Grid.Row="1" Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding LanText}" />
+                    <Border Grid.Row="2" Margin="0,3" HorizontalAlignment="Left" Style="{StaticResource BadgeStyle}">
+                        <StackPanel Orientation="Horizontal">
+                            <c:Icon Width="13" Height="13" Data="{StaticResource Icon.Route}" />
+                            <TextBlock Margin="5,0,0,0" Text="网段" />
+                        </StackPanel>
+                    </Border>
+                    <TextBlock Grid.Row="2" Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center" TextWrapping="Wrap"
+                               Style="{StaticResource MonoStyle}" Text="{Binding NetworksText}" />
+                </Grid>
+            </Border>
+
+            <!-- 变更明细 -->
+            <ScrollViewer Grid.Row="2" Margin="0,14,0,0" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+
+                    <!-- 警告 -->
+                    <Border x:Name="RemotePanel" Margin="0,0,0,10" Padding="12,9" CornerRadius="10" Background="{DynamicResource ErrorSoftBrush}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <c:Icon Width="16" Height="16" VerticalAlignment="Top" Margin="0,1,0,0"
+                                    Foreground="{DynamicResource ErrorBrush}" Data="{StaticResource Icon.Warning}" />
+                            <TextBlock Grid.Column="1" Margin="9,0,0,0" TextWrapping="Wrap"
+                                       Text="当前是远程桌面会话。修改默认路由可能让这条远程连接中断；连接断开后需要到本机操作才能恢复。" />
+                        </Grid>
+                    </Border>
+
+                    <Border x:Name="WarningPanel" Margin="0,0,0,10" Padding="12,9" CornerRadius="10" Background="{DynamicResource WarningSoftBrush}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <c:Icon Width="16" Height="16" VerticalAlignment="Top" Margin="0,1,0,0"
+                                    Foreground="{DynamicResource WarningBrush}" Data="{StaticResource Icon.Warning}" />
+                            <ItemsControl Grid.Column="1" Margin="9,0,0,0" ItemsSource="{Binding Warnings}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Margin="0,1" TextWrapping="Wrap" Text="{Binding}" />
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Grid>
+                    </Border>
+
+                    <!-- 新增 -->
+                    <StackPanel x:Name="AddPanel" Margin="0,0,0,12">
+                        <StackPanel Orientation="Horizontal">
+                            <c:Icon Width="15" Height="15" StrokeThickness="2.4" Foreground="{DynamicResource SuccessBrush}" Data="{StaticResource Icon.Plus}" />
+                            <TextBlock x:Name="AddTitle" Style="{StaticResource GroupTitleStyle}" />
+                        </StackPanel>
+                        <Border Margin="0,6,0,0" Padding="12,7" CornerRadius="8" Background="{DynamicResource SuccessSoftBrush}">
+                            <ItemsControl ItemsSource="{Binding Adds}" ItemTemplate="{StaticResource RouteLineTemplate}" />
+                        </Border>
+                    </StackPanel>
+
+                    <!-- 删除 -->
+                    <StackPanel x:Name="DeletePanel" Margin="0,0,0,12">
+                        <StackPanel Orientation="Horizontal">
+                            <c:Icon Width="15" Height="15" StrokeThickness="2.4" Foreground="{DynamicResource ErrorBrush}" Data="{StaticResource Icon.Trash}" />
+                            <TextBlock x:Name="DeleteTitle" Style="{StaticResource GroupTitleStyle}" />
+                        </StackPanel>
+                        <Border Margin="0,6,0,0" Padding="12,7" CornerRadius="8" Background="{DynamicResource ErrorSoftBrush}">
+                            <ItemsControl ItemsSource="{Binding Deletes}" ItemTemplate="{StaticResource RouteLineTemplate}" />
+                        </Border>
+                    </StackPanel>
+
+                    <!-- 保持不变 -->
+                    <StackPanel x:Name="KeptPanel" Margin="0,0,0,12">
+                        <StackPanel Orientation="Horizontal">
+                            <c:Icon Width="15" Height="15" StrokeThickness="2.4" Foreground="{DynamicResource TextSecondaryBrush}" Data="{StaticResource Icon.Check}" />
+                            <TextBlock x:Name="KeptTitle" Style="{StaticResource GroupTitleStyle}" />
+                        </StackPanel>
+                        <Border Margin="0,6,0,0" Padding="12,7" CornerRadius="8" Background="{DynamicResource SubtleBackgroundBrush}">
+                            <ItemsControl ItemsSource="{Binding Kept}" ItemTemplate="{StaticResource RouteLineTemplate}"
+                                          TextElement.Foreground="{DynamicResource TextSecondaryBrush}" />
+                        </Border>
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- 底部：备份说明 + 按钮 -->
+            <Grid Grid.Row="3" Margin="0,10,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <c:Icon Width="15" Height="15" VerticalAlignment="Top" Margin="0,1,0,0"
+                            Foreground="{DynamicResource SuccessBrush}" Data="{StaticResource Icon.ShieldCheck}" />
+                    <TextBlock x:Name="BackupNote" Margin="7,0,12,0" MaxWidth="390" TextWrapping="Wrap" TextTrimming="None"
+                               Style="{StaticResource CaptionStyle}" />
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Bottom">
+                    <Button MinWidth="84" Style="{StaticResource SecondaryButtonStyle}" Content="取消" IsCancel="True" />
+                    <Button Margin="10,0,0,0" Style="{StaticResource PrimaryButtonStyle}" Content="确认配置" IsDefault="True"
+                            c:IconAssist.Data="{StaticResource Icon.Bolt}" c:IconAssist.Filled="True" Click="OnConfirm" />
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

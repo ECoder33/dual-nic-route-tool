@@ -1,0 +1,127 @@
+<UserControl x:Class="DualNicRouteTool.Controls.RouteTopologyView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:c="clr-namespace:DualNicRouteTool.Controls"
+             x:Name="Self"
+             MinWidth="380" MinHeight="220">
+
+    <!--
+        路由拓扑图。构图呼应应用图标：左侧两块网卡的线路汇入中间的盾牌（本工具），
+        再分别流向右侧的“互联网”和“内网网段”。线路状态完全取决于实际路由表：
+        已生效 = 彩色并流动；部分生效 / 有冲突 = 琥珀色虚线；未配置 = 灰色。
+        位置与曲线在代码里按控件尺寸计算，使两条线路的起点与左侧两张网卡卡片对齐。
+    -->
+    <UserControl.Resources>
+        <Style x:Key="LaneBase" TargetType="Path">
+            <Setter Property="StrokeThickness" Value="4" />
+            <Setter Property="StrokeStartLineCap" Value="Round" />
+            <Setter Property="StrokeEndLineCap" Value="Round" />
+            <Setter Property="StrokeDashCap" Value="Round" />
+        </Style>
+        <!-- 流动层：长度为 0 的圆头虚线段呈现为一串圆点，动画推动虚线偏移使圆点沿线路流动 -->
+        <Style x:Key="LaneFlow" TargetType="Path" BasedOn="{StaticResource LaneBase}">
+            <Setter Property="StrokeDashArray" Value="0 3" />
+            <Setter Property="Visibility" Value="Collapsed" />
+        </Style>
+    </UserControl.Resources>
+
+    <Canvas x:Name="Stage" ClipToBounds="True">
+
+        <!-- 线路底层 -->
+        <Path x:Name="WanInBase" Style="{StaticResource LaneBase}" />
+        <Path x:Name="WanOutBase" Style="{StaticResource LaneBase}" />
+        <Path x:Name="LanInBase" Style="{StaticResource LaneBase}" />
+        <Path x:Name="LanOutBase" Style="{StaticResource LaneBase}" />
+
+        <!-- 线路流动层 -->
+        <Path x:Name="WanInFlow" Style="{StaticResource LaneFlow}" Stroke="{DynamicResource WanBrush}" />
+        <Path x:Name="WanOutFlow" Style="{StaticResource LaneFlow}" Stroke="{DynamicResource WanBrush}" />
+        <Path x:Name="LanInFlow" Style="{StaticResource LaneFlow}" Stroke="{DynamicResource LanBrush}" />
+        <Path x:Name="LanOutFlow" Style="{StaticResource LaneFlow}" Stroke="{DynamicResource LanBrush}" />
+
+        <!-- 起点圆点与终点箭头 -->
+        <Ellipse x:Name="WanDot" Width="12" Height="12" />
+        <Ellipse x:Name="LanDot" Width="12" Height="12" />
+        <Polygon x:Name="WanArrow" Points="0,-6 10,0 0,6" />
+        <Polygon x:Name="LanArrow" Points="0,-6 10,0 0,6" />
+
+        <!-- 线路起点的说明：经由哪个网关 -->
+        <StackPanel x:Name="WanCaption" Orientation="Horizontal">
+            <Border Style="{StaticResource BadgeStyle}" Tag="Wan">
+                <TextBlock Text="外网" FontWeight="SemiBold" />
+            </Border>
+            <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" Style="{StaticResource CaptionStyle}"
+                       Text="{Binding WanCaptionText, ElementName=Self}" />
+        </StackPanel>
+        <StackPanel x:Name="LanCaption" Orientation="Horizontal">
+            <Border Style="{StaticResource BadgeStyle}" Tag="Lan">
+                <TextBlock Text="内网" FontWeight="SemiBold" />
+            </Border>
+            <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" Style="{StaticResource CaptionStyle}"
+                       Text="{Binding LanCaptionText, ElementName=Self}" />
+        </StackPanel>
+
+        <!-- 盾牌：与应用图标主体相同 -->
+        <Grid x:Name="Shield" Width="96" Height="96" RenderTransformOrigin="0.5,0.5">
+            <Grid.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform x:Name="ShieldScale" />
+                    <TranslateTransform x:Name="ShieldShift" />
+                </TransformGroup>
+            </Grid.RenderTransform>
+            <Viewbox Stretch="Uniform">
+                <Canvas Width="24" Height="24">
+                    <Path Data="{StaticResource Icon.ShieldBody}"
+                          Fill="{DynamicResource BrandBrush}" Stroke="{DynamicResource BrandBrush}"
+                          StrokeThickness="1" StrokeLineJoin="Round" />
+                    <Path Data="{StaticResource Icon.ShieldFork}" Stroke="White" StrokeThickness="1.5"
+                          StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round" />
+                    <Ellipse Canvas.Left="11.1" Canvas.Top="10.5" Width="3" Height="3" Fill="White" />
+                </Canvas>
+            </Viewbox>
+
+            <!-- 操作结果徽标：成功为对勾，失败为叉 -->
+            <Grid x:Name="Badge" Width="30" Height="30" Margin="0,-2,-2,0"
+                  HorizontalAlignment="Right" VerticalAlignment="Top"
+                  Visibility="Collapsed" RenderTransformOrigin="0.5,0.5">
+                <Grid.RenderTransform>
+                    <ScaleTransform x:Name="BadgeScale" />
+                </Grid.RenderTransform>
+                <Ellipse x:Name="BadgeBackground" Stroke="{DynamicResource CardBackgroundBrush}" StrokeThickness="2.5" />
+                <c:Icon x:Name="BadgeIcon" Width="15" Height="15" StrokeThickness="3" Foreground="White" />
+            </Grid>
+        </Grid>
+
+        <!-- 目的地：互联网 -->
+        <Grid x:Name="WanNode" Height="64">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Border Width="46" Height="46" CornerRadius="13" Background="{DynamicResource WanBrush}">
+                <c:Icon Width="26" Height="26" Foreground="White" Data="{StaticResource Icon.Globe}" />
+            </Border>
+            <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center">
+                <TextBlock Text="互联网" FontSize="14" FontWeight="SemiBold" />
+                <TextBlock Margin="0,2,0,0" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap" MaxHeight="34"
+                           Text="{Binding WanDetail, ElementName=Self}" />
+            </StackPanel>
+        </Grid>
+
+        <!-- 目的地：内网网段 -->
+        <Grid x:Name="LanNode" Height="64">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Border Width="46" Height="46" CornerRadius="13" Background="{DynamicResource LanBrush}">
+                <c:Icon Width="26" Height="26" Foreground="White" Data="{StaticResource Icon.Building}" />
+            </Border>
+            <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center">
+                <TextBlock Text="内网网段" FontSize="14" FontWeight="SemiBold" />
+                <TextBlock Margin="0,2,0,0" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap" MaxHeight="34"
+                           Text="{Binding LanDetail, ElementName=Self}" />
+            </StackPanel>
+        </Grid>
+    </Canvas>
+</UserControl>

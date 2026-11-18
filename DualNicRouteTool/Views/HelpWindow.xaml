@@ -1,0 +1,138 @@
+<Window x:Class="DualNicRouteTool.Views.HelpWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:c="clr-namespace:DualNicRouteTool.Controls"
+        Title="使用说明"
+        Width="640" Height="700" MinWidth="520" MinHeight="420"
+        ShowInTaskbar="False" WindowStartupLocation="CenterOwner"
+        FontFamily="{StaticResource UiFont}" FontSize="13" UseLayoutRounding="True">
+
+    <Window.Resources>
+        <Style x:Key="HelpTitleStyle" TargetType="TextBlock" BasedOn="{StaticResource SectionTitleStyle}">
+            <Setter Property="Margin" Value="10,0,0,0" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style x:Key="HelpTextStyle" TargetType="TextBlock">
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="LineHeight" Value="21" />
+            <Setter Property="Margin" Value="0,8,0,0" />
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+        </Style>
+        <Style x:Key="HelpCardStyle" TargetType="Border" BasedOn="{StaticResource CardStyle}">
+            <Setter Property="Margin" Value="0,0,0,12" />
+        </Style>
+        <Style x:Key="SmallTileStyle" TargetType="Border" BasedOn="{StaticResource IconTileStyle}">
+            <Setter Property="Width" Value="30" />
+            <Setter Property="Height" Value="30" />
+            <Setter Property="CornerRadius" Value="8" />
+        </Style>
+    </Window.Resources>
+
+    <Border Background="{DynamicResource AppBackgroundBrush}" TextElement.Foreground="{DynamicResource TextPrimaryBrush}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="20,18,14,0">
+                <StackPanel>
+
+                    <Border Style="{StaticResource HelpCardStyle}">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Border Style="{StaticResource SmallTileStyle}" Background="{DynamicResource BrandBrush}">
+                                    <c:Icon Width="17" Height="17" Data="{StaticResource Icon.Route}" />
+                                </Border>
+                                <TextBlock Style="{StaticResource HelpTitleStyle}" Text="这个工具做什么" />
+                            </StackPanel>
+                            <TextBlock Style="{StaticResource HelpTextStyle}">
+                                电脑同时接了两个网络（例如一根网线连单位内网、WiFi 连互联网）时，Windows 往往会在两块网卡上各放一条默认路由，流量走哪边不确定，结果常常是“内网能上、外网不通”或者反过来。<LineBreak />
+                                本工具把路由表整理成：<Run FontWeight="SemiBold" Foreground="{DynamicResource WanBrush}" Text="默认路由只走外网网卡" />，<Run FontWeight="SemiBold" Foreground="{DynamicResource LanBrush}" Text="指定的内网网段走内网网卡" />。
+                            </TextBlock>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource HelpCardStyle}">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Border Style="{StaticResource SmallTileStyle}" Background="{DynamicResource AccentBrush}">
+                                    <c:Icon Width="17" Height="17" Filled="True" Data="{StaticResource Icon.Bolt}" />
+                                </Border>
+                                <TextBlock Style="{StaticResource HelpTitleStyle}" Text="使用步骤" />
+                            </StackPanel>
+                            <TextBlock Style="{StaticResource HelpTextStyle}">
+                                1. 在“外网网卡”里选能上互联网的那块网卡，在“内网网卡”里选连接单位内网的那块。下拉项前的图标表示网卡类型（有线、WiFi、蜂窝、虚拟网卡等）。<LineBreak />
+                                2. 核对两个网关。网关会自动填入；内网网卡没有配置网关时需要手动填写，填过一次会被记住。<LineBreak />
+                                3. 核对“内网目标网段”。默认是三个私网网段，可以按实际情况增删，支持 10.20.0.0/16 或 10.20.0.0/255.255.0.0 两种写法。<LineBreak />
+                                4. 点“一键配置”，在弹出的预览里核对将要新增和删除的路由，确认后执行。<LineBreak />
+                                5. 需要还原时点“恢复原路由”。
+                            </TextBlock>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource HelpCardStyle}">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Border Style="{StaticResource SmallTileStyle}" Background="{DynamicResource LanBrush}">
+                                    <c:Icon Width="17" Height="17" Data="{StaticResource Icon.Pulse}" />
+                                </Border>
+                                <TextBlock Style="{StaticResource HelpTitleStyle}" Text="怎么看拓扑图" />
+                            </StackPanel>
+                            <TextBlock Style="{StaticResource HelpTextStyle}">
+                                右上方的图直接反映系统当前的路由表，每 3 秒刷新一次：<LineBreak />
+                                · <Run FontWeight="SemiBold" Text="彩色线条 + 流动光点" />：这条路径已经生效（蓝色 = 外网，青绿色 = 内网）。<LineBreak />
+                                · <Run FontWeight="SemiBold" Foreground="{DynamicResource WarningBrush}" Text="橙色虚线" />：只生效了一部分，例如还有别的网卡在抢默认路由，或者只有部分网段指向了内网。<LineBreak />
+                                · <Run FontWeight="SemiBold" Text="灰色线条" />：尚未生效。<LineBreak />
+                                网段标签前的实心圆点表示该网段的路由已经在路由表里。
+                            </TextBlock>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource HelpCardStyle}">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Border Style="{StaticResource SmallTileStyle}" Background="{DynamicResource SuccessBrush}">
+                                    <c:Icon Width="17" Height="17" Data="{StaticResource Icon.ShieldCheck}" />
+                                </Border>
+                                <TextBlock Style="{StaticResource HelpTitleStyle}" Text="备份、恢复与守护" />
+                            </StackPanel>
+                            <TextBlock Style="{StaticResource HelpTextStyle}">
+                                · 每次配置前都会把将被改动的原路由写入备份；备份写不进去就不会开始配置。<LineBreak />
+                                · 配置中途出错会自动撤销本次已做的改动。<LineBreak />
+                                · 连续配置多次，“恢复原路由”仍然回到第一次配置之前的状态。<LineBreak />
+                                · 本工具添加的是临时路由，<Run FontWeight="SemiBold" Text="重启电脑后自动消失" />，需要时重新点一次“一键配置”。<LineBreak />
+                                · DHCP 续租、休眠唤醒、重新插拔网线后，系统可能把内网网卡的默认路由装回来。“守护”会在配置后检查几轮并清理；开启“持续守护”后，程序运行期间会一直检查。
+                            </TextBlock>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource HelpCardStyle}">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Border Style="{StaticResource SmallTileStyle}" Background="{DynamicResource WarningBrush}">
+                                    <c:Icon Width="17" Height="17" Data="{StaticResource Icon.Warning}" />
+                                </Border>
+                                <TextBlock Style="{StaticResource HelpTitleStyle}" Text="注意事项" />
+                            </StackPanel>
+                            <TextBlock Style="{StaticResource HelpTextStyle}">
+                                · 修改路由表需要管理员权限。<LineBreak />
+                                · 只处理 IPv4 路由。<LineBreak />
+                                · 通过远程桌面操作时请谨慎：改默认路由可能让远程连接中断。<LineBreak />
+                                · 使用 VPN 时，VPN 客户端自己也会改路由，两者可能互相影响，建议先断开 VPN 再配置。<LineBreak />
+                                · 遇到问题时，“操作日志”页签右上角的“诊断信息”可以导出网卡与路由表的完整只读报告。
+                            </TextBlock>
+                        </StackPanel>
+                    </Border>
+
+                    <TextBlock x:Name="DataPathText" Margin="4,0,0,14" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap" TextTrimming="None" />
+                </StackPanel>
+            </ScrollViewer>
+
+            <Border Grid.Row="1" Padding="20,12" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource DividerBrush}">
+                <Button MinWidth="84" HorizontalAlignment="Right" Style="{StaticResource PrimaryButtonStyle}"
+                        Content="知道了" IsDefault="True" IsCancel="True" Click="OnClose" />
+            </Border>
+        </Grid>
+    </Border>
+</Window>

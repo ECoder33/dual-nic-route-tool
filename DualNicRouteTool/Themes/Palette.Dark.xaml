@@ -1,0 +1,44 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=System.Runtime">
+
+    <!-- 深色配色。语义色整体提亮以保证在深色背景上的对比度 -->
+    <sys:String x:Key="PaletteName">Dark</sys:String>
+
+    <!-- 表面 -->
+    <SolidColorBrush x:Key="AppBackgroundBrush" Color="#141921" />
+    <SolidColorBrush x:Key="CardBackgroundBrush" Color="#1D242F" />
+    <SolidColorBrush x:Key="CardBorderBrush" Color="#2B3442" />
+    <SolidColorBrush x:Key="SubtleBackgroundBrush" Color="#262F3C" />
+    <SolidColorBrush x:Key="SubtleHoverBrush" Color="#303A49" />
+    <SolidColorBrush x:Key="SubtlePressedBrush" Color="#3A4557" />
+    <SolidColorBrush x:Key="DividerBrush" Color="#293240" />
+    <SolidColorBrush x:Key="LogBackgroundBrush" Color="#171C25" />
+    <SolidColorBrush x:Key="NeutralLineBrush" Color="#465164" />
+
+    <!-- 文字 -->
+    <SolidColorBrush x:Key="TextPrimaryBrush" Color="#EDF1F7" />
+    <SolidColorBrush x:Key="TextSecondaryBrush" Color="#A4AFC0" />
+    <SolidColorBrush x:Key="TextTertiaryBrush" Color="#77839A" />
+
+    <!-- 语义色：外网 / 内网 / 品牌 -->
+    <SolidColorBrush x:Key="WanBrush" Color="#4B9BFF" />
+    <SolidColorBrush x:Key="WanSoftBrush" Color="#1A2C48" />
+    <SolidColorBrush x:Key="LanBrush" Color="#2DD0B9" />
+    <SolidColorBrush x:Key="LanSoftBrush" Color="#153936" />
+    <SolidColorBrush x:Key="BrandBrush" Color="#2C55AD" />
+
+    <!-- 主按钮 -->
+    <SolidColorBrush x:Key="AccentBrush" Color="#2F80F0" />
+    <SolidColorBrush x:Key="AccentHoverBrush" Color="#4A93F5" />
+    <SolidColorBrush x:Key="AccentPressedBrush" Color="#2670D8" />
+    <SolidColorBrush x:Key="OnAccentBrush" Color="#FFFFFF" />
+
+    <!-- 状态 -->
+    <SolidColorBrush x:Key="SuccessBrush" Color="#4BCF86" />
+    <SolidColorBrush x:Key="SuccessSoftBrush" Color="#153729" />
+    <SolidColorBrush x:Key="WarningBrush" Color="#F0B040" />
+    <SolidColorBrush x:Key="WarningSoftBrush" Color="#3B2E16" />
+    <SolidColorBrush x:Key="ErrorBrush" Color="#FF6E6E" />
+    <SolidColorBrush x:Key="ErrorSoftBrush" Color="#40201F" />
+</ResourceDictionary>

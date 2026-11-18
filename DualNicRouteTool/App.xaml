@@ -1,0 +1,17 @@
+<Application x:Class="DualNicRouteTool.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             ShutdownMode="OnMainWindowClose">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- 配色：启动时由 ThemeService 按系统明暗模式替换为 Palette.Light / Palette.Dark -->
+                <ResourceDictionary Source="Themes/Palette.Light.xaml" />
+                <!-- 矢量图标集 -->
+                <ResourceDictionary Source="Themes/Icons.xaml" />
+                <!-- 卡片、按钮、徽标等样式 -->
+                <ResourceDictionary Source="Themes/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

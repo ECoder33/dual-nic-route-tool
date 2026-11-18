@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>DualNicRouteTool</RootNamespace>
+    <AssemblyName>DualNicRouteTool</AssemblyName>
+
+    <!-- 程序信息 -->
+    <Version>2.0.0</Version>
+    <Product>双网卡路由配置工具</Product>
+    <AssemblyTitle>双网卡路由配置工具</AssemblyTitle>
+    <Description>让公网流量走外网网卡、指定内网网段走内网网卡的 Windows 路由配置工具</Description>
+    <Copyright>Copyright (c) 2026 ECoder33. MIT License.</Copyright>
+    <RepositoryUrl>https://github.com/ECoder33/dual-nic-route-tool</RepositoryUrl>
+    <NeutralLanguage>zh-Hans</NeutralLanguage>
+
+    <!-- 图标与清单（清单声明 requireAdministrator 与 PerMonitorV2 DPI） -->
+    <ApplicationIcon>Assets\app_icon.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+
+    <!-- 只保留简体中文的框架本地化资源，减小发布体积 -->
+    <SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
+
+    <!-- Fluent 主题的 ThemeMode API 仍标记为实验性 -->
+    <NoWarn>$(NoWarn);WPF0001</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\app_icon.ico" />
+    <Resource Include="Assets\app_icon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="DualNicRouteTool.Tests" />
+  </ItemGroup>
+
+</Project>

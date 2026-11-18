@@ -1,0 +1,13 @@
+# .NET 构建产物
+bin/
+obj/
+publish/
+TestResults/
+
+# IDE 元数据
+.vs/
+*.user
+
+# app.manifest 是源码的一部分（管理员权限 + DPI 声明），必须入库；
+# 这一行防止它被全局的 *.manifest 忽略规则挡掉
+!app.manifest
