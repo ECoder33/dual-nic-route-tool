@@ -6,7 +6,7 @@
         xmlns:s="clr-namespace:DualNicRouteTool.Services"
         xmlns:vm="clr-namespace:DualNicRouteTool.ViewModels"
         Title="双网卡路由配置工具"
-        Width="1120" Height="820" MinWidth="980" MinHeight="680"
+        Width="1200" Height="820" MinWidth="1200" MinHeight="680"
         WindowStartupLocation="CenterScreen"
         Icon="/Assets/app_icon.ico"
         FontFamily="{StaticResource UiFont}" FontSize="13"
